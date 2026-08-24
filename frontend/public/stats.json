@@ -1,0 +1,32 @@
+{
+  "totalPackets": 13,
+  "totalBytes": 943,
+  "forwardedPackets": 12,
+  "droppedPackets": 1,
+  "tcpPackets": 11,
+  "udpPackets": 2,
+  "otherPackets": 0,
+  "activeConnections": 8,
+  "lbReceived": 13,
+  "lbDispatched": 13,
+  "fpProcessed": 13,
+  "fpForwarded": 12,
+  "fpDropped": 1,
+  "applications": {
+    "GitHub": 1,
+    "Google": 1,
+    "Unknown": 6
+  },
+  "trafficData": [
+    {
+      "time": "PCAP",
+      "packets": 13
+    }
+  ],
+  "rules": {
+    "blockedIPs": 1,
+    "blockedApps": 1,
+    "blockedDomains": 0,
+    "blockedPorts": 0
+  }
+}

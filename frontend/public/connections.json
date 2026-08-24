@@ -1,0 +1,84 @@
+{
+  "connections": [
+    {
+      "source": "93.184.216.34:80",
+      "destination": "192.168.1.10:57917",
+      "protocol": "TCP",
+      "sni": "",
+      "application": "Unknown",
+      "packets": 1,
+      "status": "NEW",
+      "action": "ALLOW"
+    },
+    {
+      "source": "192.168.1.10:54976",
+      "destination": "8.8.8.8:53",
+      "protocol": "UDP",
+      "sni": "",
+      "application": "Unknown",
+      "packets": 1,
+      "status": "NEW",
+      "action": "ALLOW"
+    },
+    {
+      "source": "192.168.1.10:59835",
+      "destination": "142.250.185.206:443",
+      "protocol": "TCP",
+      "sni": "www.google.com",
+      "application": "Google",
+      "packets": 3,
+      "status": "BLOCKED",
+      "action": "BLOCK"
+    },
+    {
+      "source": "140.82.114.4:443",
+      "destination": "192.168.1.10:54545",
+      "protocol": "TCP",
+      "sni": "",
+      "application": "Unknown",
+      "packets": 1,
+      "status": "NEW",
+      "action": "ALLOW"
+    },
+    {
+      "source": "192.168.1.10:57081",
+      "destination": "8.8.8.8:53",
+      "protocol": "UDP",
+      "sni": "",
+      "application": "Unknown",
+      "packets": 1,
+      "status": "NEW",
+      "action": "ALLOW"
+    },
+    {
+      "source": "192.168.1.10:54545",
+      "destination": "140.82.114.4:443",
+      "protocol": "TCP",
+      "sni": "github.com",
+      "application": "GitHub",
+      "packets": 3,
+      "status": "CLASSIFIED",
+      "action": "ALLOW"
+    },
+    {
+      "source": "142.250.185.206:443",
+      "destination": "192.168.1.10:59835",
+      "protocol": "TCP",
+      "sni": "",
+      "application": "Unknown",
+      "packets": 1,
+      "status": "NEW",
+      "action": "ALLOW"
+    },
+    {
+      "source": "192.168.1.10:57917",
+      "destination": "93.184.216.34:80",
+      "protocol": "TCP",
+      "sni": "",
+      "application": "Unknown",
+      "packets": 2,
+      "status": "NEW",
+      "action": "ALLOW"
+    }
+  ]
+}

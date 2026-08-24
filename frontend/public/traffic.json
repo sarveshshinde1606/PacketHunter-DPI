@@ -1,0 +1,50 @@
+[
+  {
+    "source": "192.168.1.10:52341",
+    "destination": "142.250.x.x:443",
+    "protocol": "TCP",
+    "sni": "google.com",
+    "application": "Google",
+    "action": "ALLOW"
+  },
+  {
+    "source": "192.168.1.15:51234",
+    "destination": "157.240.x.x:443",
+    "protocol": "TCP",
+    "sni": "youtube.com",
+    "application": "YouTube",
+    "action": "BLOCK"
+  },
+  {
+    "source": "192.168.1.20:49821",
+    "destination": "8.8.8.8:53",
+    "protocol": "UDP",
+    "sni": "google.com",
+    "application": "DNS",
+    "action": "ALLOW"
+  },
+  {
+    "source": "192.168.1.25:50123",
+    "destination": "157.240.x.x:443",
+    "protocol": "TCP",
+    "sni": "facebook.com",
+    "application": "Facebook",
+    "action": "BLOCK"
+  },
+  {
+    "source": "192.168.1.31:53122",
+    "destination": "140.82.x.x:443",
+    "protocol": "TCP",
+    "sni": "github.com",
+    "application": "GitHub",
+    "action": "ALLOW"
+  },
+  {
+    "source": "192.168.1.42:54881",
+    "destination": "104.18.x.x:443",
+    "protocol": "TCP",
+    "sni": "discord.com",
+    "application": "Discord",
+    "action": "ALLOW"
+  }
+]
