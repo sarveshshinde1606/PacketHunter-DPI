@@ -3,6 +3,8 @@
 
 [BLOCKED_APPS]
 Google
+youtube
+GitHub
 
 [BLOCKED_DOMAINS]
 

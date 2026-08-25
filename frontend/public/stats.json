@@ -1,31 +1,41 @@
 {
-  "totalPackets": 13,
-  "totalBytes": 943,
-  "forwardedPackets": 12,
+  "totalPackets": 52,
+  "totalBytes": 3777,
+  "forwardedPackets": 51,
   "droppedPackets": 1,
-  "tcpPackets": 11,
-  "udpPackets": 2,
+  "tcpPackets": 52,
+  "udpPackets": 0,
   "otherPackets": 0,
-  "activeConnections": 8,
-  "lbReceived": 13,
-  "lbDispatched": 13,
-  "fpProcessed": 13,
-  "fpForwarded": 12,
+  "activeConnections": 26,
+  "lbReceived": 52,
+  "lbDispatched": 52,
+  "fpProcessed": 52,
+  "fpForwarded": 51,
   "fpDropped": 1,
   "applications": {
+    "Instagram": 1,
+    "TikTok": 1,
     "GitHub": 1,
+    "Spotify": 1,
+    "Facebook": 1,
+    "Twitter/X": 2,
+    "Discord": 1,
+    "Zoom": 1,
+    "YouTube": 1,
     "Google": 1,
-    "Unknown": 6
+    "Telegram": 1,
+    "Amazon": 1,
+    "Unknown": 13
   },
   "trafficData": [
     {
       "time": "PCAP",
-      "packets": 13
+      "packets": 52
     }
   ],
   "rules": {
     "blockedIPs": 1,
-    "blockedApps": 1,
+    "blockedApps": 3,
     "blockedDomains": 0,
     "blockedPorts": 0
   }

@@ -1,8 +1,8 @@
 {
   "connections": [
     {
-      "source": "93.184.216.34:80",
-      "destination": "192.168.1.10:57917",
+      "source": "99.86.0.100:443",
+      "destination": "192.168.1.30:64361",
       "protocol": "TCP",
       "sni": "",
       "application": "Unknown",
@@ -11,9 +11,29 @@
       "action": "ALLOW"
     },
     {
-      "source": "192.168.1.10:54976",
-      "destination": "8.8.8.8:53",
-      "protocol": "UDP",
+      "source": "192.168.1.30:54999",
+      "destination": "52.94.236.248:443",
+      "protocol": "TCP",
+      "sni": "www.amazon.com",
+      "application": "Amazon",
+      "packets": 3,
+      "status": "CLASSIFIED",
+      "action": "ALLOW"
+    },
+    {
+      "source": "192.168.1.30:58439",
+      "destination": "35.186.227.140:443",
+      "protocol": "TCP",
+      "sni": "web.telegram.org",
+      "application": "Telegram",
+      "packets": 3,
+      "status": "CLASSIFIED",
+      "action": "ALLOW"
+    },
+    {
+      "source": "157.240.1.35:443",
+      "destination": "192.168.1.30:59031",
+      "protocol": "TCP",
       "sni": "",
       "application": "Unknown",
       "packets": 1,
@@ -21,7 +41,17 @@
       "action": "ALLOW"
     },
     {
-      "source": "192.168.1.10:59835",
+      "source": "192.168.1.30:54609",
+      "destination": "142.250.185.110:443",
+      "protocol": "TCP",
+      "sni": "www.youtube.com",
+      "application": "YouTube",
+      "packets": 3,
+      "status": "CLASSIFIED",
+      "action": "ALLOW"
+    },
+    {
+      "source": "192.168.1.30:60441",
       "destination": "142.250.185.206:443",
       "protocol": "TCP",
       "sni": "www.google.com",
@@ -31,8 +61,8 @@
       "action": "BLOCK"
     },
     {
-      "source": "140.82.114.4:443",
-      "destination": "192.168.1.10:54545",
+      "source": "35.186.224.47:443",
+      "destination": "192.168.1.30:56976",
       "protocol": "TCP",
       "sni": "",
       "application": "Unknown",
@@ -41,9 +71,19 @@
       "action": "ALLOW"
     },
     {
-      "source": "192.168.1.10:57081",
-      "destination": "8.8.8.8:53",
-      "protocol": "UDP",
+      "source": "192.168.1.30:52419",
+      "destination": "104.16.85.20:443",
+      "protocol": "TCP",
+      "sni": "discord.com",
+      "application": "Discord",
+      "packets": 3,
+      "status": "CLASSIFIED",
+      "action": "ALLOW"
+    },
+    {
+      "source": "104.16.85.20:443",
+      "destination": "192.168.1.30:52419",
+      "protocol": "TCP",
       "sni": "",
       "application": "Unknown",
       "packets": 1,
@@ -51,7 +91,17 @@
       "action": "ALLOW"
     },
     {
-      "source": "192.168.1.10:54545",
+      "source": "192.168.1.30:59031",
+      "destination": "157.240.1.35:443",
+      "protocol": "TCP",
+      "sni": "www.facebook.com",
+      "application": "Facebook",
+      "packets": 3,
+      "status": "CLASSIFIED",
+      "action": "ALLOW"
+    },
+    {
+      "source": "192.168.1.30:57272",
       "destination": "140.82.114.4:443",
       "protocol": "TCP",
       "sni": "github.com",
@@ -61,8 +111,18 @@
       "action": "ALLOW"
     },
     {
-      "source": "142.250.185.206:443",
-      "destination": "192.168.1.10:59835",
+      "source": "192.168.1.30:60141",
+      "destination": "23.52.167.61:443",
+      "protocol": "TCP",
+      "sni": "www.netflix.com",
+      "application": "Twitter/X",
+      "packets": 3,
+      "status": "CLASSIFIED",
+      "action": "ALLOW"
+    },
+    {
+      "source": "35.186.224.25:443",
+      "destination": "192.168.1.30:50221",
       "protocol": "TCP",
       "sni": "",
       "application": "Unknown",
@@ -71,12 +131,132 @@
       "action": "ALLOW"
     },
     {
-      "source": "192.168.1.10:57917",
-      "destination": "93.184.216.34:80",
+      "source": "192.168.1.30:50221",
+      "destination": "35.186.224.25:443",
+      "protocol": "TCP",
+      "sni": "zoom.us",
+      "application": "Zoom",
+      "packets": 3,
+      "status": "CLASSIFIED",
+      "action": "ALLOW"
+    },
+    {
+      "source": "23.52.167.61:443",
+      "destination": "192.168.1.30:60141",
       "protocol": "TCP",
       "sni": "",
       "application": "Unknown",
-      "packets": 2,
+      "packets": 1,
+      "status": "NEW",
+      "action": "ALLOW"
+    },
+    {
+      "source": "192.168.1.30:56976",
+      "destination": "35.186.224.47:443",
+      "protocol": "TCP",
+      "sni": "open.spotify.com",
+      "application": "Spotify",
+      "packets": 3,
+      "status": "CLASSIFIED",
+      "action": "ALLOW"
+    },
+    {
+      "source": "192.168.1.30:64361",
+      "destination": "99.86.0.100:443",
+      "protocol": "TCP",
+      "sni": "www.tiktok.com",
+      "application": "TikTok",
+      "packets": 3,
+      "status": "CLASSIFIED",
+      "action": "ALLOW"
+    },
+    {
+      "source": "140.82.114.4:443",
+      "destination": "192.168.1.30:57272",
+      "protocol": "TCP",
+      "sni": "",
+      "application": "Unknown",
+      "packets": 1,
+      "status": "NEW",
+      "action": "ALLOW"
+    },
+    {
+      "source": "35.186.227.140:443",
+      "destination": "192.168.1.30:58439",
+      "protocol": "TCP",
+      "sni": "",
+      "application": "Unknown",
+      "packets": 1,
+      "status": "NEW",
+      "action": "ALLOW"
+    },
+    {
+      "source": "104.244.42.65:443",
+      "destination": "192.168.1.30:49941",
+      "protocol": "TCP",
+      "sni": "",
+      "application": "Unknown",
+      "packets": 1,
+      "status": "NEW",
+      "action": "ALLOW"
+    },
+    {
+      "source": "142.250.185.110:443",
+      "destination": "192.168.1.30:54609",
+      "protocol": "TCP",
+      "sni": "",
+      "application": "Unknown",
+      "packets": 1,
+      "status": "NEW",
+      "action": "ALLOW"
+    },
+    {
+      "source": "52.94.236.248:443",
+      "destination": "192.168.1.30:54999",
+      "protocol": "TCP",
+      "sni": "",
+      "application": "Unknown",
+      "packets": 1,
+      "status": "NEW",
+      "action": "ALLOW"
+    },
+    {
+      "source": "192.168.1.30:49941",
+      "destination": "104.244.42.65:443",
+      "protocol": "TCP",
+      "sni": "twitter.com",
+      "application": "Twitter/X",
+      "packets": 3,
+      "status": "CLASSIFIED",
+      "action": "ALLOW"
+    },
+    {
+      "source": "157.240.1.174:443",
+      "destination": "192.168.1.30:61907",
+      "protocol": "TCP",
+      "sni": "",
+      "application": "Unknown",
+      "packets": 1,
+      "status": "NEW",
+      "action": "ALLOW"
+    },
+    {
+      "source": "192.168.1.30:61907",
+      "destination": "157.240.1.174:443",
+      "protocol": "TCP",
+      "sni": "www.instagram.com",
+      "application": "Instagram",
+      "packets": 3,
+      "status": "CLASSIFIED",
+      "action": "ALLOW"
+    },
+    {
+      "source": "142.250.185.206:443",
+      "destination": "192.168.1.30:60441",
+      "protocol": "TCP",
+      "sni": "",
+      "application": "Unknown",
+      "packets": 1,
       "status": "NEW",
       "action": "ALLOW"
     }

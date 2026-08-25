@@ -9,11 +9,27 @@ const demoPcaps = [
 ];
 
 const emptyStats = {
-  totalPackets: 0, totalBytes: 0, forwardedPackets: 0, droppedPackets: 0,
-  tcpPackets: 0, udpPackets: 0, otherPackets: 0, activeConnections: 0,
-  lbReceived: 0, lbDispatched: 0, fpProcessed: 0, fpForwarded: 0,
-  fpDropped: 0, applications: {}, trafficData: [],
-  rules: { blockedIPs: 0, blockedApps: 0, blockedDomains: 0, blockedPorts: 0 },
+  totalPackets: 0,
+  totalBytes: 0,
+  forwardedPackets: 0,
+  droppedPackets: 0,
+  tcpPackets: 0,
+  udpPackets: 0,
+  otherPackets: 0,
+  activeConnections: 0,
+  lbReceived: 0,
+  lbDispatched: 0,
+  fpProcessed: 0,
+  fpForwarded: 0,
+  fpDropped: 0,
+  applications: {},
+  trafficData: [],
+  rules: {
+    blockedIPs: 0,
+    blockedApps: 0,
+    blockedDomains: 0,
+    blockedPorts: 0,
+  },
 };
 
 function App() {
@@ -23,37 +39,70 @@ function App() {
   const [outputFile, setOutputFile] = useState("");
   const [stats, setStats] = useState(emptyStats);
   const [connections, setConnections] = useState([]);
-  const [rules, setRules] = useState({ ip: [], app: [], domain: [], port: [] });
+  const [rules, setRules] = useState({
+    ip: [],
+    app: [],
+    domain: [],
+    port: [],
+  });
 
   const loadInitialData = async () => {
     try {
       const [s, c, r] = await Promise.all([
         fetch("/stats.json").then((x) => x.json()),
         fetch("/connections.json").then((x) => x.json()),
-        fetch("/api/rules").then((x) => x.json()).catch(() => ({ success: false })),
+        fetch("/api/rules")
+          .then((x) => x.json())
+          .catch(() => ({ success: false })),
       ]);
-      setStats({ ...emptyStats, ...s, applications: s.applications || {} });
+
+      setStats({
+        ...emptyStats,
+        ...s,
+        applications: s.applications || {},
+      });
+
       setConnections(c.connections || []);
-      if (r.success) setRules(r.rules);
+
+      if (r.success) {
+        setRules(r.rules);
+      }
     } catch (e) {
       console.error(e);
     }
   };
 
-  useEffect(() => { loadInitialData(); }, []);
+  useEffect(() => {
+    loadInitialData();
+  }, []);
 
   const analyzePCAP = async (file) => {
     if (!file) return;
+
     setAnalyzing(true);
     setError("");
+
     const formData = new FormData();
     formData.append("pcap", file);
 
     try {
-      const response = await fetch("/api/analyze", { method: "POST", body: formData });
+      const response = await fetch("/api/analyze", {
+        method: "POST",
+        body: formData,
+      });
+
       const data = await response.json();
-      if (!response.ok || !data.success) throw new Error(data.error || "Analysis failed");
-      setStats({ ...emptyStats, ...data.stats, applications: data.stats.applications || {} });
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || "Analysis failed");
+      }
+
+      setStats({
+        ...emptyStats,
+        ...data.stats,
+        applications: data.stats.applications || {},
+      });
+
       setConnections(data.connections || []);
       setOutputFile(data.outputFile || "");
     } catch (e) {
@@ -66,14 +115,23 @@ function App() {
   const analyzeDemo = async (path, name) => {
     try {
       setError("");
+
       const response = await fetch(path);
-      if (!response.ok) throw new Error("Could not load demo PCAP");
+
+      if (!response.ok) {
+        throw new Error("Could not load demo PCAP");
+      }
+
       const blob = await response.blob();
+
       const file = new File(
         [blob],
         `${name.replace(/\s+/g, "-").toLowerCase()}.pcap`,
-        { type: "application/vnd.tcpdump.pcap" }
+        {
+          type: "application/vnd.tcpdump.pcap",
+        }
       );
+
       setSelectedFile(file);
       await analyzePCAP(file);
     } catch (e) {
@@ -83,6 +141,7 @@ function App() {
 
   const addRule = async () => {
     const type = window.prompt("Rule type: ip, domain, app, or port");
+
     if (!type) return;
 
     const normalized = type.trim().toLowerCase();
@@ -93,12 +152,15 @@ function App() {
     }
 
     const value = window.prompt(`Enter ${normalized} to block:`);
+
     if (!value?.trim()) return;
 
     try {
       const response = await fetch("/api/rules", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           type: normalized,
           value: value.trim(),
@@ -126,8 +188,13 @@ function App() {
     try {
       const response = await fetch("/api/rules", {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type, value }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type,
+          value,
+        }),
       });
 
       const data = await response.json();
@@ -149,24 +216,38 @@ function App() {
 
   const appRows = useMemo(() => {
     const entries = Object.entries(stats.applications || {});
-    const total = entries.reduce((a, [, v]) => a + v, 0);
+
+    const total = entries.reduce(
+      (sum, [, value]) => sum + value,
+      0
+    );
 
     return entries.map(([name, count]) => ({
       name,
       count,
-      percent: total ? Math.round((count / total) * 100) : 0,
+      percent: total
+        ? Math.round((count / total) * 100)
+        : 0,
     }));
   }, [stats.applications]);
 
-  const allRules = Object.entries(rules).flatMap(([type, values]) =>
-    values.map((value) => ({ type, value }))
+  const allRules = Object.entries(rules).flatMap(
+    ([type, values]) =>
+      values.map((value) => ({
+        type,
+        value,
+      }))
   );
 
   return (
     <div className="app">
+
+      {/* ================= HEADER ================= */}
+
       <header className="topbar">
         <div className="brand">
           <div className="brand-icon">🛡️</div>
+
           <div>
             <h1>PacketHunter</h1>
             <p>Deep Packet Inspection & Network Monitoring</p>
@@ -179,174 +260,398 @@ function App() {
         </div>
       </header>
 
+
+      {/* ================= MAIN ================= */}
+
       <main className="dashboard">
 
-      {/* HERO */}
-<section className="hero">
-  <div className="eyebrow">PACKETHUNTER DPI</div>
+        {/* ================= TOP DASHBOARD ================= */}
 
-  <h2>Network Traffic Analysis Dashboard</h2>
+        {/* ================= FULL WIDTH HERO ================= */}
 
-  <p>
-    Upload a PCAP, run the C++ DPI engine, inspect applications and
-    connections, apply blocking rules, and download the filtered
-    traffic — all from one page.
-  </p>
+        <section className="hero">
+          <div className="eyebrow">PACKETHUNTER DPI</div>
 
-  <div className="upload-area">
+          <h2>Network Traffic Analysis Dashboard</h2>
 
-    <div className="upload-main-row">
-      <label className="upload-button">
-        Choose PCAP
-        <input
-          type="file"
-          accept=".pcap"
-          onChange={(e) => {
-            setSelectedFile(e.target.files?.[0] || null);
-            setError("");
-          }}
-        />
-      </label>
+          <p>
+            Upload a PCAP, run the C++ DPI engine, inspect applications and
+            connections, apply blocking rules, and download the filtered
+            traffic — all from one page.
+          </p>
+        </section>
 
-      <span className="file-name">
-        {selectedFile?.name || "No file selected"}
-      </span>
 
-      <button
-        className="primary-button"
-        disabled={!selectedFile || analyzing}
-        onClick={() => analyzePCAP(selectedFile)}
-      >
-        {analyzing ? "Analyzing..." : "Analyze PCAP"}
-      </button>
-    </div>
+        {/* ================= MAIN OVERVIEW ================= */}
 
-    {/* DEMO PCAPS */}
-    <div className="hero-demo-section">
-      <div className="hero-demo-title">
-        <strong>Quick Demo PCAPs</strong>
-        <span>Run a sample directly through the live backend.</span>
-      </div>
+        <section className="overview-grid">
 
-      <div className="hero-demo-buttons">
-        {demoPcaps.map(([name, desc, pcapPath]) => (
-          <button
-            key={pcapPath}
-            className="demo-green-button"
-            disabled={analyzing}
-            title={desc}
-            onClick={() => analyzeDemo(pcapPath, name)}
-          >
-            {analyzing ? "Analyzing..." : name}
-          </button>
-        ))}
-      </div>
-    </div>
+          {/* ================= LEFT ================= */}
 
-    {outputFile && (
-      <a
-        className="secondary-button"
-        href={`/api/download/${outputFile}`}
-      >
-        Download Filtered PCAP
-      </a>
-    )}
+          <div className="overview-left">
 
-  </div>
+            {/* ================= BLOCKING RULES ================= */}
 
-  {error && <div className="error-message">{error}</div>}
-</section>
-        {/* BLOCKING RULES MOVED BEFORE ANALYSIS */}
-        <section className="panel rules-panel">
-          <div className="panel-title">
-            <div>
-              <span className="section-label">SECURITY</span>
-              <h3>Blocking Rules</h3>
-            </div>
+            <div className="hero-rules">
 
-            <button className="small-button" onClick={addRule}>
-              + Add Rule
-            </button>
-          </div>
+              <div className="section-header">
 
-          <div className="rules">
-            {allRules.length ? (
-              allRules.map((r) => (
-                <div
-                  className="rule-row"
-                  key={`${r.type}-${r.value}`}
-                >
-                  <span className="rule-type">
-                    {r.type.toUpperCase()}
+                <div>
+                  <span className="section-label">
+                    SECURITY
                   </span>
 
-                  <strong>{r.value}</strong>
-
-                  <span className="rule-status">BLOCK</span>
-
-                  <button
-                    className="delete-button"
-                    onClick={() => deleteRule(r.type, r.value)}
-                  >
-                    Delete
-                  </button>
+                  <h3>
+                    Blocking Rules
+                  </h3>
                 </div>
-              ))
-            ) : (
-              <div className="empty-state">
-                No active blocking rules. Click "+ Add Rule" to create one.
+
+                <button
+                  className="small-button"
+                  onClick={addRule}
+                >
+                  + Add Rule
+                </button>
+
+              </div>
+
+
+              <div className="rules">
+
+                {allRules.length ? (
+                  allRules.map((r) => (
+                    <div
+                      className="rule-row"
+                      key={`${r.type}-${r.value}`}
+                    >
+
+                      <span className="rule-type">
+                        {r.type.toUpperCase()}
+                      </span>
+
+                      <strong>
+                        {r.value}
+                      </strong>
+
+                      <span className="rule-status">
+                        BLOCK
+                      </span>
+
+                      <button
+                        className="delete-button"
+                        onClick={() =>
+                          deleteRule(
+                            r.type,
+                            r.value
+                          )
+                        }
+                      >
+                        Delete
+                      </button>
+
+                    </div>
+                  ))
+                ) : (
+                  <div className="empty-state">
+                    No active blocking rules.
+                  </div>
+                )}
+
+              </div>
+
+            </div>
+
+
+            {/* ================= QUICK DEMOS ================= */}
+
+            <div className="quick-demo">
+
+              <div className="quick-demo-title">
+
+                <strong>
+                  Quick Demo PCAPs
+                </strong>
+
+                <span>
+                  Run a sample directly through the live backend.
+                </span>
+
+              </div>
+
+
+              <div className="demo-buttons">
+
+                {demoPcaps.map(
+                  ([name, desc, pcapPath]) => (
+                    <button
+                      key={pcapPath}
+                      className="demo-button"
+                      disabled={analyzing}
+                      title={desc}
+                      onClick={() =>
+                        analyzeDemo(
+                          pcapPath,
+                          name
+                        )
+                      }
+                    >
+                      {analyzing
+                        ? "Analyzing..."
+                        : name}
+                    </button>
+                  )
+                )}
+
+              </div>
+
+            </div>
+
+
+            {/* ================= UPLOAD ================= */}
+
+            <div className="compact-upload">
+
+              <label className="upload-button">
+
+                Choose PCAP
+
+                <input
+                  type="file"
+                  accept=".pcap"
+                  onChange={(e) => {
+                    setSelectedFile(
+                      e.target.files?.[0] || null
+                    );
+
+                    setError("");
+                  }}
+                />
+
+              </label>
+
+
+              <span className="file-name">
+                {selectedFile?.name ||
+                  "No file selected"}
+              </span>
+
+
+              <button
+                className="primary-button"
+                disabled={
+                  !selectedFile || analyzing
+                }
+                onClick={() =>
+                  analyzePCAP(selectedFile)
+                }
+              >
+                {analyzing
+                  ? "Analyzing..."
+                  : "Analyze PCAP"}
+              </button>
+
+            </div>
+
+
+            {outputFile && (
+              <a
+                className="download-button"
+                href={`/api/download/${outputFile}`}
+              >
+                Download Filtered PCAP
+              </a>
+            )}
+
+
+            {error && (
+              <div className="error-message">
+                {error}
               </div>
             )}
+
           </div>
+
+
+          {/* ================= RIGHT ================= */}
+
+          <div className="overview-right">
+
+            {/* ================= STATS ================= */}
+
+            <section className="stats-grid">
+
+              <div className="stat-card">
+
+                <span>
+                  Total Packets
+                </span>
+
+                <strong>
+                  {stats.totalPackets.toLocaleString()}
+                </strong>
+
+                <small>
+                  {stats.totalBytes.toLocaleString()}
+                  {" "}bytes processed
+                </small>
+
+              </div>
+
+
+              <div className="stat-card danger-stat">
+
+                <span>
+                  Blocked / Dropped
+                </span>
+
+                <strong>
+                  {stats.droppedPackets.toLocaleString()}
+                </strong>
+
+                <small>
+                  {stats.rules?.blockedIPs || 0}
+                  {" "}IP ·{" "}
+                  {stats.rules?.blockedApps || 0}
+                  {" "}app rules matched
+                </small>
+
+              </div>
+
+
+              <div className="stat-card">
+
+                <span>
+                  Active Connections
+                </span>
+
+                <strong>
+                  {stats.activeConnections.toLocaleString()}
+                </strong>
+
+                <small>
+                  Tracked network flows
+                </small>
+
+              </div>
+
+
+              <div className="stat-card">
+
+                <span>
+                  Forwarded Packets
+                </span>
+
+                <strong>
+                  {stats.forwardedPackets.toLocaleString()}
+                </strong>
+
+                <small>
+                  Packets allowed by engine
+                </small>
+
+              </div>
+
+            </section>
+
+
+            {/* ================= APPLICATION DISTRIBUTION ================= */}
+
+            <section className="panel application-panel">
+
+              <div className="panel-title">
+
+                <div>
+
+                  <span className="section-label">
+                    CLASSIFICATION
+                  </span>
+
+                  <h3>
+                    Application Distribution
+                  </h3>
+
+                </div>
+
+              </div>
+
+
+              <div className="application-list">
+
+                {appRows.length ? (
+                  appRows.map((a) => (
+                    <div
+                      className="application-row"
+                      key={a.name}
+                    >
+
+                      <div className="application-name">
+
+                        <span className="app-dot" />
+
+                        {a.name}
+
+                      </div>
+
+
+                      <div className="application-meter">
+
+                        <div
+                          style={{
+                            width: `${a.percent}%`,
+                          }}
+                        />
+
+                      </div>
+
+
+                      <strong>
+                        {a.percent}%
+                      </strong>
+
+                    </div>
+                  ))
+                ) : (
+                  <div className="empty-state">
+                    No applications classified yet.
+                  </div>
+                )}
+
+              </div>
+
+            </section>
+
+          </div>
+
         </section>
 
-        {/* STATS */}
-        <section className="stats-grid">
-          <div className="stat-card">
-            <span>Total Packets</span>
-            <strong>{stats.totalPackets.toLocaleString()}</strong>
-            <small>
-              {stats.totalBytes.toLocaleString()} bytes processed
-            </small>
-          </div>
 
-          <div className="stat-card danger-stat">
-            <span>Blocked / Dropped</span>
-            <strong>{stats.droppedPackets.toLocaleString()}</strong>
-            <small>
-              {stats.rules?.blockedIPs || 0} IP ·{" "}
-              {stats.rules?.blockedApps || 0} app rules matched
-            </small>
-          </div>
+        {/* ================= CONNECTIONS ================= */}
 
-          <div className="stat-card">
-            <span>Active Connections</span>
-            <strong>{stats.activeConnections.toLocaleString()}</strong>
-            <small>Tracked network flows</small>
-          </div>
+        <section className="panel connections-panel">
 
-          <div className="stat-card">
-            <span>Forwarded Packets</span>
-            <strong>{stats.forwardedPackets.toLocaleString()}</strong>
-            <small>Packets allowed by engine</small>
-          </div>
-        </section>
-
-        {/* CONNECTIONS */}
-        <section className="panel">
           <div className="panel-title">
+
             <div>
-              <span className="section-label">NETWORK FLOWS</span>
-              <h3>Connections</h3>
+              <span className="section-label">
+                NETWORK FLOWS
+              </span>
+
+              <h3>
+                Connections
+              </h3>
             </div>
 
             <span className="connection-count">
               {connections.length} flows
             </span>
+
           </div>
 
+
           <div className="table-wrap">
+
             <table>
+
               <thead>
                 <tr>
                   <th>Source</th>
@@ -359,18 +664,38 @@ function App() {
                 </tr>
               </thead>
 
+
               <tbody>
+
                 {connections.length ? (
                   connections.map((c, i) => (
                     <tr
                       key={`${c.source}-${c.destination}-${i}`}
                     >
-                      <td>{c.source}</td>
-                      <td>{c.destination}</td>
-                      <td className="protocol">{c.protocol}</td>
-                      <td>{c.sni || "-"}</td>
-                      <td>{c.application}</td>
-                      <td>{c.packets}</td>
+
+                      <td>
+                        {c.source}
+                      </td>
+
+                      <td>
+                        {c.destination}
+                      </td>
+
+                      <td className="protocol">
+                        {c.protocol}
+                      </td>
+
+                      <td>
+                        {c.sni || "-"}
+                      </td>
+
+                      <td>
+                        {c.application}
+                      </td>
+
+                      <td>
+                        {c.packets}
+                      </td>
 
                       <td>
                         <span
@@ -383,54 +708,31 @@ function App() {
                           {c.action || "ALLOW"}
                         </span>
                       </td>
+
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="7" className="table-empty">
-                      No connections yet. Analyze a PCAP above.
+                    <td
+                      colSpan="7"
+                      className="table-empty"
+                    >
+                      No connections yet.
+                      Analyze a PCAP above.
                     </td>
                   </tr>
                 )}
+
               </tbody>
+
             </table>
-          </div>
-        </section>
 
-        {/* APPLICATION CLASSIFICATION */}
-        <section className="panel">
-          <div className="panel-title">
-            <div>
-              <span className="section-label">CLASSIFICATION</span>
-              <h3>Application Distribution</h3>
-            </div>
           </div>
 
-          <div className="application-list">
-            {appRows.length ? (
-              appRows.map((a) => (
-                <div className="application-row" key={a.name}>
-                  <div className="application-name">
-                    <span className="app-dot" />
-                    {a.name}
-                  </div>
-
-                  <div className="application-meter">
-                    <div style={{ width: `${a.percent}%` }} />
-                  </div>
-
-                  <strong>{a.percent}%</strong>
-                </div>
-              ))
-            ) : (
-              <div className="empty-state">
-                No applications classified yet.
-              </div>
-            )}
-          </div>
         </section>
 
       </main>
+
     </div>
   );
 }
